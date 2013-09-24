@@ -73,23 +73,44 @@ namespace Infrastructure.Data.EntityFramework
             }            
         }
 
-        public void SaveChanges()
-        {
-            if (IsInTransaction)
-            {
-                throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
-            }
-            _objectContext.SaveChanges();
-        }
+		public void SaveChanges()
+		{
+			if (IsInTransaction)
+			{
+				throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
+			}
+			_objectContext.SaveChanges();
+		}
 
-        public void SaveChanges(SaveOptions saveOptions)
-        {
-            if (IsInTransaction)
-            {
-                throw new ApplicationException("A transaction is running. Call BeginTransaction instead.");
-            }
-            _objectContext.SaveChanges(saveOptions);
-        }
+		/// <summary>
+		/// Save temporary change with transaction
+		/// </summary>
+		public void Save()
+		{
+			if (!IsInTransaction)
+				throw new ApplicationException("No transaction is running. Please call BeginTransaction first.");
+			_objectContext.SaveChanges();
+		}
+
+		/// <summary>
+		/// Directly save change without using begin transaction with saving option
+		/// </summary>
+		public void Save(SaveOptions saveOptions)
+		{
+			if (!IsInTransaction)
+				throw new ApplicationException("No transaction is running. Please call BeginTransaction first.");
+
+			_objectContext.SaveChanges(saveOptions);
+		}
+
+		public void SaveChanges(SaveOptions saveOptions)
+		{
+			if (IsInTransaction)
+			{
+				throw new ApplicationException("A transaction is running. Call BeginTransaction instead.");
+			}
+			_objectContext.SaveChanges(saveOptions);
+		}
 
         /// <summary>
         /// Releases the current transaction
