@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common;
 using System.Data;
 using System.Data.Objects;
 
@@ -10,18 +6,50 @@ namespace Infrastructure.Data
 {
     public interface IUnitOfWork : IDisposable
     {
-        bool IsInTransaction { get; }
+		/// <summary>
+		/// Check wether transaction is running
+		/// </summary>
+		bool IsInTransaction { get; }
 
-        void SaveChanges();
+		/// <summary>
+		/// Directly save change without using Begin & Commit Transaction
+		/// </summary>
+		void SaveChanges();
 
-        void SaveChanges(SaveOptions saveOptions);
+		/// <summary>
+		/// Directly save change without using Begin & Commit Transaction with saving option
+		/// </summary>
+		void SaveChanges(SaveOptions saveOptions);
 
-        void BeginTransaction();
+		/// <summary>
+		/// Save change immediately than accept all change with Commit Transaction.
+		/// </summary>
+		void Save();
 
-        void BeginTransaction(IsolationLevel isolationLevel);
+		/// <summary>
+		/// Save change immediately than accept all change with Commit Transaction with saving option
+		/// </summary>
+		void Save(SaveOptions saveOptions);
 
-        void RollBackTransaction();
+		/// <summary>
+		/// Start transaction
+		/// </summary>
+		void BeginTransaction();
 
-        void CommitTransaction();
-    }
+		/// <summary>
+		/// Start transaction with isolation level
+		/// </summary>
+		/// <param name="isolationLevel">isolation level</param>
+		void BeginTransaction(IsolationLevel isolationLevel);
+
+		/// <summary>
+		/// Rollback transaction change
+		/// </summary>
+		void RollBackTransaction();
+
+		/// <summary>
+		/// Commit all transaction change
+		/// </summary>
+		void CommitTransaction();
+	}
 }

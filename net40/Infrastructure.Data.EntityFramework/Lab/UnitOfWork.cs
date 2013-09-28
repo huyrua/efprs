@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Objects;
 using System.Data;
 using System.Data.Common;
@@ -75,24 +72,51 @@ namespace Infrastructure.Data.EntityFramework.Lab
             }            
         }
 
-        public void SaveChanges()
-        {
-            if (IsInTransaction)
-            {
-                throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
-            }
-            ((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges();
-        }
+		/// <summary>
+		/// Directly save change without using begin transaction
+		/// </summary>
+		public void SaveChanges()
+		{
+			if (IsInTransaction)
+			{
+				throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
+			}
+			((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges();
+		}
 
-        public void SaveChanges(SaveOptions saveOptions)
-        {
-            if (IsInTransaction)
-            {
-                throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
-            }
+		/// <summary>
+		/// Save temporary change with transaction
+		/// </summary>
+		public void Save()
+		{
+			if (!IsInTransaction)
+				throw new ApplicationException("No transaction is running. Please call BeginTransaction first.");
+			((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges();
+		}
 
-            ((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges(saveOptions);
-        }
+		/// <summary>
+		/// Directly save change without using begin transaction with saving option
+		/// </summary>
+		public void Save(SaveOptions saveOptions)
+		{
+			if (!IsInTransaction)
+				throw new ApplicationException("No transaction is running. Please call BeginTransaction first.");
+
+			((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges(saveOptions);
+		}
+
+		/// <summary>
+		/// Directly save change without using begin transaction with saving option
+		/// </summary>
+		public void SaveChanges(SaveOptions saveOptions)
+		{
+			if (IsInTransaction)
+			{
+				throw new ApplicationException("A transaction is running. Call CommitTransaction instead.");
+			}
+
+			((IObjectContextAdapter)_dbContext).ObjectContext.SaveChanges(saveOptions);
+		}
 
         #region Implementation of IDisposable
 
